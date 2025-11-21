@@ -1,0 +1,9 @@
+CompileFlags:
+    # Remove GCC-specific flags that Clang doesn't understand
+    Remove:
+        - -mlongcalls
+        - -fno-tree-switch-conversion
+        - -fstrict-volatile-bitfields
+        - -fno-shrink-wrap
+        - -fno-jump-tables
+        - -fno-tree-loop-distribute-patterns
