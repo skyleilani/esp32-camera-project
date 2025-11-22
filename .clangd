@@ -7,3 +7,7 @@ CompileFlags:
         - -fno-shrink-wrap
         - -fno-jump-tables
         - -fno-tree-loop-distribute-patterns
+        - -mdisable-hardware-atomics
+        - -mfix-esp32-psram-cache-issue
+        - -mfix-esp32-psram-cache-strategy
+        

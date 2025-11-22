@@ -15,3 +15,15 @@ void system_logger_log_message(const char *format, ...)
     vprintf(format, args);
     va_end(args);
 }
+
+void system_log_info(const char, *format, ...){
+    return;
+}
+
+void system_log_warn(const char, *format, ...){
+    return;
+}
+
+void system_log_error(const char, *format, ...){
+    return;
+}
