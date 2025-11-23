@@ -10,4 +10,3 @@ CompileFlags:
         - -mdisable-hardware-atomics
         - -mfix-esp32-psram-cache-issue
         - -mfix-esp32-psram-cache-strategy
-        
