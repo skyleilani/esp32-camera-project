@@ -1,6 +1,5 @@
 #TO-DO:
     # Change lines 19-24 for readability. Generally I prefer verbosity for the sake of readability rather than complexity for the sake of conciseness.
-    # Review functionality of this dockerfile again lol briefly. Each line. What does each var represent? What does host represent in each var? 
 ARG USERNAME=idf
 ARG HOST_UID=1000
 ARG HOST_GID=1000
