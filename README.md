@@ -18,7 +18,7 @@ Building a secure camera system on ESP32 with focus on data integrity verificati
 This project uses Docker to encapsulate the build toolchain and dependencies.
 Enforces a consistent environment across host machines and ensures that builds are reproducible.
 
-- **Base Image**: `[espressif/idf:v5.5.1](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)`
+- **Base Image**: [espressif/idf:v5.5.1](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)
 - **Language Server**: `clangd` accessed via a wrapper script (`scripts/clangd-wrapper.sh`). Necessary because the host IDE is sandboxed (VSCodium via Flatpak on Linux)
 - **Host Consistency**: Matching host UID/GID prevents permission issues with mounted volumes
 - **Cross-platform support**: Consistent builds across Windows, MacOS, and Linux
