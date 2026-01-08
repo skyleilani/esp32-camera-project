@@ -4,4 +4,4 @@
 #include <esp_log.h>
 #include "system_logger.h"  
 
-static const char *TAG = "SYSTEM_LOGGER";
+//static const char *TAG = "SYSTEM_LOGGER";

@@ -1,12 +1,25 @@
+If:
+  PathMatch: .*
+
 CompileFlags:
-    # Remove GCC-specific flags that Clang doesn't understand
-    Remove:
-        - -mlongcalls
-        - -fno-tree-switch-conversion
-        - -fstrict-volatile-bitfields
-        - -fno-shrink-wrap
-        - -fno-jump-tables
-        - -fno-tree-loop-distribute-patterns
-        - -mdisable-hardware-atomics
-        - -mfix-esp32-psram-cache-issue
-        - -mfix-esp32-psram-cache-strategy
+  Add:
+    - --target=x86_64-unknown-linux-gnu
+    - -D__XTENSA__
+  Remove:
+    - -mlongcalls
+    - -fno-tree-switch-conversion
+    - -fno-builtin-memory
+    - -fno-builtin-memset
+    - -fno-builtin-bzero
+    - -fno-builtin-stpcpy
+    - -fno-builtin-strncpy
+    - -fstrict-volatile-bitfields
+    - -fno-shrink-wrap
+    - -fno-jump-tables
+    - -fno-tree-loop-distribute-patterns
+    - -mdisable-hardware-atomics
+    - -mfix-esp32-psram-cache-issue
+    - -mfix-esp32-psram-cache-strategy
+    - -fmacro-prefix-map=/project=.
+    - -fmacro-prefix-map=/opt/esp/idf=/IDF
+    - -fdiagnostics-color=always
