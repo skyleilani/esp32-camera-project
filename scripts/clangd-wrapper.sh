@@ -1,14 +1,18 @@
-# executable for vscodium - clangd language server
 #!/bin/bash
-
-LOG_FILE="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)/logs/clangd-wrapper.log"
-
-echo "--- Wrapper script started at $(date) ---" > "${LOG_FILE}"
-echo "Passed arguments: $@" >> "${LOG_FILE}"
 
 # Get absolute path to the project root on HOST
 PROJECT_ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
-echo "Project Root: ${PROJECT_ROOT}" >> "${LOG_FILE}"
+
+LOGS_DIR="${PROJECT_ROOT}/logs/clangd"
+mkdir -p "${LOGS_DIR}"
+
+LOG_FILE="${LOGS_DIR}/clangd_$(date +%Y-%m-%d_%H-%M-%S).log"
+
+{
+    echo "--- clangd session started at $(date) ---"
+    echo "Passed arguments: $@"
+    echo "Project Root: ${PROJECT_ROOT}"
+} > "${LOG_FILE}"
 
 # Construct the mapping in the format: HostPath=ContainerPath
 MAPPING="${PROJECT_ROOT}=/project"
@@ -22,4 +26,4 @@ flatpak-spawn --host docker exec -i \
     --path-mappings="${MAPPING}" \
     --compile-commands-dir=/project/build \
     --header-insertion=never \
-    "$@" 2>> "${LOG_FILE}"
+    "$@" 2> >(tee -a "${LOG_FILE}" >&2)

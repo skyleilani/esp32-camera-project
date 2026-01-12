@@ -13,7 +13,14 @@ ARG HOST_GID
 
 # Install dependencies and create the user that matches the host
 RUN apt-get update && \
-    apt-get install -y clangd && \
+    # Install clangd version 20 specifically
+    apt-get install -y wget gnupg software-properties-common && \
+    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    add-apt-repository -y "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-20 main" && \
+    apt-get update && \
+    apt-get install -y clangd-20 && \
+    # Create symlink to make clangd-20 the default clangd
+    update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-20 100 && \
     # Check if target GID or UID is already taken and change the name if it is
     (getent group ${USERNAME} ||\ 
         (getent group ${HOST_GID} && groupmod -n ${USERNAME} $(getent group ${HOST_GID} | cut -d: -f1)) || \
