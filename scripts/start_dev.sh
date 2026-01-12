@@ -75,9 +75,9 @@ TERMINAL SESSION OUTPUT
 EOF
 # Run docker with output captured to log file while still displaying in terminal
 # Using script to capture all terminal output including colors and interactive elements
-script -q -c "docker run -it --rm \
+script -a -f "${LOG_FILE}" -c "docker run -it --rm \
   --name esp32-dev-container \
   --device=/dev/ttyUSB0 \
   -v \"$PROJECT_DIR\":/project \
   -w /project \
-  \"$IMAGE_NAME\"" "${LOG_FILE}"
+  \"$IMAGE_NAME\"" < /dev/null

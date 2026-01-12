@@ -3,22 +3,32 @@
 # Get absolute path to the project root on HOST
 PROJECT_ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
 
-LOGS_DIR="${PROJECT_ROOT}/logs/clangd"
+LOGS_DIR="${PROJECT_ROOT}/logs"
 mkdir -p "${LOGS_DIR}"
 
-LOG_FILE="${LOGS_DIR}/clangd_$(date +%Y-%m-%d_%H-%M-%S).log"
+LOG_FILE="${LOGS_DIR}/clangd.log"
 
-{
-    echo "--- clangd session started at $(date) ---"
-    echo "Passed arguments: $@"
-    echo "Project Root: ${PROJECT_ROOT}"
-} > "${LOG_FILE}"
+# Capture session info for the log header
+SESSION_START=$(date '+%Y-%m-%d %H:%M:%S %Z')
 
 # Construct the mapping in the format: HostPath=ContainerPath
 MAPPING="${PROJECT_ROOT}=/project"
-echo "Mapping: ${MAPPING}" >> "${LOG_FILE}"
 
-# Run clangd, redirecting its error output to our log file
+# Write header to log file 
+cat > "${LOG_FILE}" << EOF
+===========================================
+CLANGD SESSION LOG
+===========================================
+Session Start:          ${SESSION_START}
+Project Root:           ${PROJECT_ROOT}
+Path Mapping:           ${MAPPING}
+===========================================
+CLANGD OUTPUT
+===========================================
+
+EOF
+
+# Run clangd, redirect stderr to log file
 flatpak-spawn --host docker exec -i \
     -w /project \
     esp32-dev-container \
@@ -26,4 +36,4 @@ flatpak-spawn --host docker exec -i \
     --path-mappings="${MAPPING}" \
     --compile-commands-dir=/project/build \
     --header-insertion=never \
-    "$@" 2> >(tee -a "${LOG_FILE}" >&2)
+    "$@" 2>> "${LOG_FILE}"
