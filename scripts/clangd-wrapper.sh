@@ -35,5 +35,6 @@ flatpak-spawn --host docker exec -i \
     /usr/bin/clangd \
     --path-mappings="${MAPPING}" \
     --compile-commands-dir=/project/build \
+    --query-driver="/opt/esp/tools/**/bin/xtensa-esp32-elf-gcc" \
     --header-insertion=never \
     "$@" 2>> "${LOG_FILE}"
