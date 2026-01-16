@@ -32,5 +32,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Allow git access to ESP-IDF repos despite container UID/GID mismatch
+RUN git config --system --add safe.directory /opt/esp/idf && \
+    git config --system --add safe.directory /opt/esp/idf/components/openthread/openthread
+
 # Switch to newly created non-root user
 USER ${USERNAME}
