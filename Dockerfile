@@ -4,7 +4,7 @@ ARG USERNAME=idf
 ARG HOST_UID=1000
 ARG HOST_GID=1000
 
-FROM espressif/idf:v5.5.1
+FROM espressif/idf:v5.5.2
 
 # Pass arguments into the build stage
 ARG USERNAME
