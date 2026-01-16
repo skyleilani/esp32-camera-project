@@ -26,6 +26,13 @@ esp_err_t i2c_manager_init(void) {
         .flags.enable_internal_pullup = true,
     };
 
-    // I2C bus handle
-    esp_err_t err = i2c_new_master_bus(&i2c_bus_config,&bus_handle)
+    // create I2C bus handle
+    esp_err_t err = i2c_new_master_bus(&i2c_bus_config,&bus_handle);
+    if (err!= ESP_OK) {
+        ESP_LOGE(TAG, "I2C master bus initialization failed: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGI(TAG, "I2C manager initialized succesfully on por %d.", I2C_MASTER_PORT_NUM);
+    return ESP_OK;
 }
