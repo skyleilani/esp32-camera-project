@@ -1,5 +1,5 @@
 #include "i2c_manager.h"
-#include "driver/i2c.h"
+#include "driver/i2c_master.h"
 #include "esp_log.h"
 
 // tag for logging
@@ -10,13 +10,21 @@ static const char *TAG = "I2C_MANAGER";
 #define I2C_CONTROLLER_SCL_IO            22            
 #define I2C_CONTROLLER_SDA_IO            21
 #define I2C_CONTROLLER_FREQ_HZ           100000        // clock rate 100kHz (standard mode)
-#define I2C_CONTROLLER_TX_BUF_DISABLE    0             // disable internal driver ring buffer
-#define I2C_CONTROLLER_RX_BUF_DISABLE    0             
-#define ACK_CHECK_EN                     0x1           // enable controller check for an ACK from target; verify successful communication
-#define ACK_CHECK_DIS                    0x0           
-#define ACK_VAL                          0x0           // success acknowledgement 
-#define NACK_VAL                         0x1           // negative acknowledgement
 
+// handle to I2c bus
+static i2c_master_bus_handle_t bus_handle;
+
+// configure I2C bus
 esp_err_t i2c_manager_init(void) {
-    return ESP_OK;
+    // config structure for i2c bus
+    i2c_master_bus_config_t conf = {
+        .i2c_port = I2C_CONTROLLER_PORT_NUM,
+        .sda_io_num = I2C_CONTROLLER_SDA_IO, // SDA GPIO
+        .scl_io_num = I2C_CONTROLLER_SCL_IO, // SCL GPIO
+        .clk_source = I2C_CLK_SRC_DEFAULT,
+        .glitch_ignore_cnt = 7,
+        .flags.enable_internal_pullup = true,
+    };
+
+    
 }
