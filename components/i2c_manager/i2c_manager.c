@@ -36,3 +36,24 @@ esp_err_t i2c_manager_init(void) {
     ESP_LOGI(TAG, "I2C manager initialized succesfully on por %d.", I2C_MASTER_PORT_NUM);
     return ESP_OK;
 }
+
+void i2c_manager_scan(void) {
+    if (bus_handle == NULL) {
+        ESP_LOGE(TAG, "I2C manager isn't initialized. Call i2c_manager_init() first to do so.");
+        return;
+    }
+    ESP_LOGI(TAG, "Scanning I2C bus...");
+    uint8_t address;
+    esp_err_t err;
+
+    for (address = 1; address < 127; address++){
+        // See if peripheral sends ACK.
+        err = i2c_master_probe(bus_handle, address, 50);
+        
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "Device found at address: 0x%02X", address);
+        } else if (err != ESP_ERR_TIMEOUT) {
+            ESP_LOGW(TAG, "Error probing address 0x%02X: %s", address, esp_err_to_name(err));
+        }
+    }
+}
