@@ -1,9 +1,5 @@
-If:
-  PathMatch: ^/project/
-
 CompileFlags:
   CompilationDatabase: build
-  BuiltinHeaders: QueryDriver
   Add:
     - -include
     - /project/build/config/sdkconfig.h

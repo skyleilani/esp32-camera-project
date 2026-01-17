@@ -18,11 +18,12 @@ RUN apt-get update && \
     wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
     add-apt-repository -y "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-20 main" && \
     apt-get update && \
-    apt-get install -y clangd-20 && \
+    apt-get install -y clang-20 clangd-20 && \
     # Create symlink to make clangd-20 the default clangd
     update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-20 100 && \
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-20 100 && \
     # Check if target GID or UID is already taken and change the name if it is
-    (getent group ${USERNAME} ||\ 
+    (getent group ${USERNAME} || \ 
         (getent group ${HOST_GID} && groupmod -n ${USERNAME} $(getent group ${HOST_GID} | cut -d: -f1)) || \
         groupadd --gid ${HOST_GID} ${USERNAME}) && \
     (getent passwd ${USERNAME} || \
