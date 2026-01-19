@@ -11,22 +11,22 @@ static const char *TAG = "I2C_MANAGER";
 #define I2C_MASTER_SDA_IO            21
 #define I2C_MASTER_FREQ_HZ           100000        // clock rate 100kHz (standard mode)
 
-// handle to I2c bus
+// initialized I2C peripheral object. Stores state and config info for I2C 
 static i2c_master_bus_handle_t bus_handle;
 
-// configure I2C bus
+// setup I2C hardware (configure I2C bus)
 esp_err_t i2c_manager_init(void) {
-    // config structure for i2c bus
+    // Set config with all params needed for the bus
     i2c_master_bus_config_t i2c_bus_config = {
         .i2c_port = I2C_MASTER_PORT_NUM,
         .sda_io_num = I2C_MASTER_SDA_IO, // SDA GPIO
         .scl_io_num = I2C_MASTER_SCL_IO, // SCL GPIO
         .clk_source = I2C_CLK_SRC_DEFAULT,
         .glitch_ignore_cnt = 7,              // number of consecutive glitches to be ignored by I2C bus
-        .flags.enable_internal_pullup = true,
+        .flags.enable_internal_pullup = true, // instruct driver to enable SDA and SCL pull-up resistors
     };
 
-    // create I2C bus handle
+    // create I2C bus handle according to i2c_bus_config params
     esp_err_t err = i2c_new_master_bus(&i2c_bus_config,&bus_handle);
     if (err!= ESP_OK) {
         ESP_LOGE(TAG, "I2C master bus initialization failed: %s", esp_err_to_name(err));
@@ -37,11 +37,13 @@ esp_err_t i2c_manager_init(void) {
     return ESP_OK;
 }
 
+// loop from address 0x01 to 0x7F and attempt I2C communication. Log if peripheral sends ACK
 void i2c_manager_scan(void) {
     if (bus_handle == NULL) {
         ESP_LOGE(TAG, "I2C manager isn't initialized. Call i2c_manager_init() first to do so.");
         return;
     }
+
     ESP_LOGI(TAG, "Scanning I2C bus...");
     uint8_t address;
     esp_err_t err;
