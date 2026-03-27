@@ -50,7 +50,7 @@ void sccb_interface_scan(void) {
 
     for (address = 1; address < 127; address++){
         // See if peripheral sends ACK.
-        err = sccb_interface_probe(bus_handle, address, 50);
+        err = i2c_master_probe(bus_handle, address, 50);
         
         if (err == ESP_OK) {
             ESP_LOGI(TAG, "Device found at address: 0x%02X", address);
