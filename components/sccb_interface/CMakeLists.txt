@@ -1,5 +1,5 @@
 idf_component_register(
-    SRC "i2c_manager.c"
+    SRC "sccb_interface.c"
     INCLUDE_DIRS "include"
     REQUIRES driver
 )

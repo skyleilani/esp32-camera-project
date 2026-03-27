@@ -1,9 +1,9 @@
-#include "i2c_manager.h"
+#include "sccb_interface.h"
 #include "driver/i2c_master.h"
 #include "esp_log.h"
 
 // tag for logging
-static const char *TAG = "I2C_MANAGER";
+static const char *TAG = "SCCB_INTERFACE";
 
 // I2C Configuration Macros
 #define I2C_MASTER_PORT_NUM          I2C_NUM_0     // using default controller
@@ -15,7 +15,7 @@ static const char *TAG = "I2C_MANAGER";
 static i2c_master_bus_handle_t bus_handle;
 
 // setup I2C hardware (configure I2C bus)
-esp_err_t i2c_manager_init(void) {
+esp_err_t sccb_interface_init(void) {
     // Set config with all params needed for the bus
     i2c_master_bus_config_t i2c_bus_config = {
         .i2c_port = I2C_MASTER_PORT_NUM,
@@ -38,9 +38,9 @@ esp_err_t i2c_manager_init(void) {
 }
 
 // loop from address 0x01 to 0x7F and attempt I2C communication. Log if peripheral sends ACK
-void i2c_manager_scan(void) {
+void sccb_interface_scan(void) {
     if (bus_handle == NULL) {
-        ESP_LOGE(TAG, "I2C manager isn't initialized. Call i2c_manager_init() first to do so.");
+        ESP_LOGE(TAG, "I2C manager isn't initialized. Call sccb_interface_init() first to do so.");
         return;
     }
 
@@ -50,7 +50,7 @@ void i2c_manager_scan(void) {
 
     for (address = 1; address < 127; address++){
         // See if peripheral sends ACK.
-        err = i2c_master_probe(bus_handle, address, 50);
+        err = sccb_interface_probe(bus_handle, address, 50);
         
         if (err == ESP_OK) {
             ESP_LOGI(TAG, "Device found at address: 0x%02X", address);
