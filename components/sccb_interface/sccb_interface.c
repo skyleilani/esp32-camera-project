@@ -1,17 +1,43 @@
 #include "sccb_interface.h"
 #include "esp_log.h"
+#include "esp_check.h"
 
 // tag for logging
 static const char *TAG = "SCCB_INTERFACE";
 
 // initialized I2C peripheral object. Stores state and config info for I2C 
 static i2c_master_bus_handle_t sccb_bus_handle = NULL;
+static i2c_master_dev_handle_t sccb_dev_handle = NULL;
 
+
+esp_err_t sccb_create_device(void) {
+    if (sccb_bus_handle == NULL) {
+        ESP_LOGE(TAG, "Can't create the device, I2C bus not initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    i2c_device_config_t dev_config = {
+        .dev_addr_length = I2C_ADDR_BIT_7,
+        .device_address = SCCB_DEVICE_ADDR_WRITE,
+        .scl_speed_hz = SCCB_FREQ_HZ,
+        .scl_wait_us = 0,
+        .flags.disable_ack_check = false, // enable ack checking
+    };
+
+    esp_err_t err = i2c_master_bus_add_device(sccb_bus_handle, &dev_config, &sccb_dev_handle);
+    if (err != ESP_OK){
+        ESP_LOGE(TAG, "Failed to add I2C device: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGD(TAG, "I2C device handle was successfully created");
+    return ESP_OK;
+}
 // setup I2C hardware (configure I2C bus)
 esp_err_t sccb_interface_init(void) {
     // check if already initialized so there's no resource leaks
     if (sccb_bus_handle != NULL){
-        ESP_LOGW(TAG, "SCCB interface is already initialized");
+        ESP_LOGW(TAG, "SCCB interface already initialized");
         return ESP_ERR_INVALID_STATE;
     }
 
@@ -30,12 +56,15 @@ esp_err_t sccb_interface_init(void) {
 
     // create I2C master bus handle
     esp_err_t err = i2c_new_master_bus(&i2c_bus_config,&sccb_bus_handle);
-    if (err!= ESP_OK) {
-        ESP_LOGE(TAG, "I2C master bus initialization failed: %s", esp_err_to_name(err));
-        return err;
-    }
+    ESP_RETURN_ON_ERROR(err, TAG, "I2C master bus initialization failed");
 
     ESP_LOGD(TAG, "I2C bus created on port %d", SCCB_I2C_PORT);
+
+    err = sccb_create_device();
+    ESP_RETURN_ON_ERROR(err, TAG, "I2C device registration failed");
+
+    ESP_LOGI(TAG, "SCCB interface initialized succcessfully (SCL=%d, SDA=%d, Freq=%d Hz)", SCCB_SCL_GPIO, SCCB_SDA_GPIO, SCCB_FREQ_HZ);
+    
     return ESP_OK;
 }
 
