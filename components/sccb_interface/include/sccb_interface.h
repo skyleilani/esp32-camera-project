@@ -2,9 +2,10 @@
 #define SCCB_INTERFACE_H
 
 #include "esp_err.h"
+#include "driver/i2c_master.h"
 
 // SCCB_Interface config params
-#define SCCB_I2C_PORT I2C_NUM0
+#define SCCB_I2C_PORT I2C_NUM_0
 #define SCCB_SCL_GPIO 22
 #define SCCB_SDA_GPIO 21
 #define SCCB_FREQ_HZ 100000
