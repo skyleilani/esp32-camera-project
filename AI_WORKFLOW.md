@@ -1,7 +1,7 @@
 ---
-## title: AI Workflow description: > Rules governing AI assistance during development of this project. Included in every AI session to ensure the AI acts as a reviewer and learning tool rather than an implementation author. 
-# AI Workflow
-> **Note for human readers:** This file is uploaded at the start of every AI-assisted session during development of this project. It is the actual document used to constrain AI behaviour in each session. Reading it gives you a direct view into the constraints that are active during every AI session.
+title: AI Workflow description: > Rules governing AI assistance during development of this project. Included in every AI session to ensure the AI acts as a reviewer and learning tool rather than an implementation author.
+description: >
+    **Note for human readers:** This file is uploaded at the start of every AI-assisted session during development of this project. It is the actual document used to constrain AI behaviour in each session. Reading it gives you a direct view into the constraints that are active during every AI session.
 ---
 
 ## Role Definition
