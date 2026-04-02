@@ -66,6 +66,31 @@ esp_err_t sccb_interface_init(void) {
     return ESP_OK;
 }
 
+esp_err_t sccb_interface_deinit(void){
+    esp_err_t err = ESP_OK;
+
+    // remove device from the bus if it exists
+    if (sccb_dev_handle != NULL) {
+        err = i2c_master_bus_rm_device(sccb_dev_handle);
+        if (err != ESP_OK){
+            ESP_LOGE(TAG, "Failed to remove I2C device: %s", esp_err_to_name(err));
+        }
+        sccb_dev_handle = NULL;
+    }
+
+    // delete i2c bus if it exists
+    if (sccb_bus_handle != NULL) {
+        err = i2c_del_master_bus(sccb_bus_handle);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to delete I2C bus: %s", esp_err_to_name(err));
+        }
+        sccb_bus_handle = NULL;
+    }
+
+    ESP_LOGI(TAG, "SCCB interface deinitialized");
+    return err;
+}
+
 esp_err_t sccb_write_reg(uint8_t reg_addr, uint8_t value) {
     if (sccb_dev_handle == NULL) {
         ESP_LOGE(TAG, "Device not initialized");
@@ -176,4 +201,21 @@ void sccb_interface_scan(void) {
     } else {
         ESP_LOGI(TAG, "Scan complete: %d devices found", devices_found);
     }
+}
+
+esp_err_t sccb_probe_address(uint8_t address){
+    if (sccb_bus_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    esp_err_t err = i2c_master_probe(sccb_bus_handle, address, SCCB_TIMEOUT_MS);
+
+    if (err == ESP_OK) {
+        ESP_LOGD(TAG, "Device acknowledged at 0x%02X", address);
+    } else  if (err == ESP_ERR_TIMEOUT) {
+        ESP_LOGD(TAG, "No device at 0x%02X", address);
+    } else {
+        ESP_LOGW(TAG, "Probe error at 0x%02X", address, esp_err_to_name(err));
+    }
+    return err;
 }
