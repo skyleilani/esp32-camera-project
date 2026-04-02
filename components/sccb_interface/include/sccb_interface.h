@@ -20,7 +20,7 @@ esp_err_t sccb_interface_init(void);
 esp_err_t sccb_write_reg(uint8_t reg_addr, uint8_t value);
 
 // read 8 bit value from register
-esp_err_t sccb_read_reg(uint8_t reg_addr, uint8_t value);
+esp_err_t sccb_read_reg(uint8_t reg_addr, uint8_t *value);
 
 // write multiple bytes to ov2640 registers
 esp_err_t sccb_write_regs(uint8_t reg_addr, const uint8_t *data, size_t data_len);

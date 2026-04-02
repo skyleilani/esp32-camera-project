@@ -9,7 +9,6 @@ static const char *TAG = "SCCB_INTERFACE";
 static i2c_master_bus_handle_t sccb_bus_handle = NULL;
 static i2c_master_dev_handle_t sccb_dev_handle = NULL;
 
-
 esp_err_t sccb_create_device(void) {
     if (sccb_bus_handle == NULL) {
         ESP_LOGE(TAG, "Can't create the device, I2C bus not initialized");
@@ -64,8 +63,91 @@ esp_err_t sccb_interface_init(void) {
     ESP_RETURN_ON_ERROR(err, TAG, "I2C device registration failed");
 
     ESP_LOGI(TAG, "SCCB interface initialized succcessfully (SCL=%d, SDA=%d, Freq=%d Hz)", SCCB_SCL_GPIO, SCCB_SDA_GPIO, SCCB_FREQ_HZ);
-    
     return ESP_OK;
+}
+
+esp_err_t sccb_write_reg(uint8_t reg_addr, uint8_t value) {
+    if (sccb_dev_handle == NULL) {
+        ESP_LOGE(TAG, "Device not initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    uint8_t write_buf[2] = {reg_addr, value};
+
+    esp_err_t err = i2c_master_transmit(sccb_dev_handle, write_buf, sizeof(write_buf), SCCB_TIMEOUT_MS);
+
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Write failed for register 0x%02X: %s", reg_addr, esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGD(TAG, "Write: reg=0x%02X, val=0x%02X", reg_addr, value);
+    return ESP_OK;
+}
+
+esp_err_t sccb_read_reg(uint8_t reg_addr, uint8_t *value) {
+    if (sccb_dev_handle == NULL) {
+        ESP_LOGE(TAG, "Device isn't initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (value == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    esp_err_t err = i2c_master_transmit_receive(sccb_dev_handle, &reg_addr, 1, value, 1, SCCB_TIMEOUT_MS);
+    
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Read failed for reg=0x%02X: %s", reg_addr, esp_err_to_name(err));
+    }
+
+    ESP_LOGD(TAG, "Read: reg=0x%02X, val=0x%02X", reg_addr, *value);
+    return ESP_OK;
+}
+
+esp_err_t sccb_write_regs(uint8_t reg_addr, const uint8_t *data, size_t data_len) {
+    if (sccb_dev_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (data == NULL || data_len == 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    // buffer for register addy and data
+    uint8_t *write_buf = malloc(data_len +1);
+    if (write_buf == NULL){
+        return ESP_ERR_NO_MEM;
+    }
+
+    write_buf[0] = reg_addr;
+    memcpy(&write_buf[1], data, data_len);
+
+    esp_err_t err = i2c_master_transmit(sccb_dev_handle, write_buf, data_len + 1, SCCB_TIMEOUT_MS);
+    free(write_buf);
+
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Multiple byte write failed: %s", esp_err_to_name(err));
+    }
+
+    return err;
+}
+
+esp_err_t sccb_read_regs(uint8_t reg_addr, uint8_t *data, size_t data_len) {
+    if (sccb_dev_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (data == NULL || data_len == 0) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    
+    esp_err_t err = i2c_master_transmit_receive(sccb_dev_handle, &reg_addr, 1, data, data_len, SCCB_TIMEOUT_MS);
+    
+    if (err != ESP_OK){
+        ESP_LOGE(TAG, "Multiple byte read failed: %s", esp_err_to_name(err));
+    }
+    return err;
 }
 
 // loop from address 0x01 to 0x7F and attempt I2C communication. Log if peripheral sends ACK
