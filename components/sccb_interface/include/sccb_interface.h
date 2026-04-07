@@ -1,6 +1,7 @@
 #ifndef SCCB_INTERFACE_H
 #define SCCB_INTERFACE_H
 
+#include <stdint.h>
 #include "esp_err.h"
 #include "driver/i2c_master.h"
 
