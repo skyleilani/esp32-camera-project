@@ -7,7 +7,7 @@
 /**
  * @brief Configure OV2640 SCCB/I2C registers with expected value (register baseline) and verify match
  * 
- * @param[out] *failed_reg_addr Optional: OV2640 register address that contains a mismatched value
+ * @param[out] failed_reg_addr Optional: OV2640 register address that contains a mismatched value
  *                              May be NULL if caller doesn't need failed register address
  *                              Value is only valid on failure                             
  * @return esp_err_t
