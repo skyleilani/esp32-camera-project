@@ -1,5 +1,4 @@
-<!--
-AI Workflow
+## AI Workflow
 
 This document outlines the rules governing AI assistance during development of this project.
 Included in every AI session to ensure the AI acts as a reviewer and learning tool rather than an implementation author.
@@ -8,7 +7,6 @@ Included in every AI session to ensure the AI acts as a reviewer and learning to
     This file is uploaded at the start of every AI-assisted session during development of this project.
     It is the actual document used to constrain AI behavior in each session.
     Reading it gives you a direct view into the constraints that are active during every AI session.
--->
 
 ## Role Definition
 
