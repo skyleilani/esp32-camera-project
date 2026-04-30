@@ -2,7 +2,7 @@
 #define OV2640_CONFIG_H
 
 #include <stdint.h>
-#include "esp_err.h"
+#include <esp_err.h>
 
 /**
  * @brief Configure OV2640 SCCB/I2C registers with expected value (register baseline) and verify match
